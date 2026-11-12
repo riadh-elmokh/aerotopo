@@ -92,8 +92,10 @@ def fetch(endpoint, query, timeout=180, retries=2, is_canceled=None):
         req = urllib.request.Request(
             endpoint, data=payload, headers={"User-Agent": USER_AGENT}
         )
+        if urllib.parse.urlparse(endpoint).scheme != "https":
+            raise OverpassError("only https endpoints are allowed")
         try:
-            with urllib.request.urlopen(req, timeout=timeout + 30) as resp:
+            with urllib.request.urlopen(req, timeout=timeout + 30) as resp:  # nosec B310
                 data = json.loads(resp.read().decode("utf-8"))
         except urllib.error.HTTPError as exc:
             last, too_big = f"HTTP {exc.code} {exc.reason}", exc.code == 504

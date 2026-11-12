@@ -19,7 +19,7 @@ LAYER_NAMES = {
     'sand': 'Sand area',
     'gravel': 'Gravel',
     'levee': 'Levee or esker',
-    'pass': 'Mountain pass',
+    'mtn_col': 'Mountain pass',
     'peaks': 'Highest elevation on chart',
     'survey': 'Spot elevation',
     'wood': 'Coniferous trees',

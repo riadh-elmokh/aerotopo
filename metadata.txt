@@ -5,10 +5,12 @@ description=Download OpenStreetMap topographic data for aeronautical charts (ICA
 about=AeroTopo downloads OpenStreetMap features through the Overpass API and organises them by the topographic, hydrographic, cultural, obstacle and aerodrome symbols of ICAO Annex 4 (Aeronautical Charts), Appendix 2. Pick individual layers or tick everything an Annex 4 chart type requires (obstacle charts, aerodrome charts, enroute/area/SID/STAR, instrument and visual approach, 1:500 000, 1:1 000 000, small scale, plotting and ATC surveillance minimum altitude charts).
     Large extents are downloaded in automatic tiles that split themselves when the server is overloaded. Results are saved as GeoPackage or Shapefile and added to the project.
     Requires an internet connection (public Overpass API, no API key). Data (c) OpenStreetMap contributors, ODbL. OSM is NOT an authoritative aeronautical data source: airspace, procedures and official obstacle data come from the AIP. Contours and spot-elevation grids require a DEM. Not affiliated with or endorsed by ICAO.
-version=1.0.0
+version=1.0.2
 author=Riadh Elmokh
 email=riadhelmokh09@gmail.com
-changelog=1.0.0 - First release.
+changelog=1.0.2 - Qt6 compatibility: all Qt/QGIS enums are now fully scoped (works on QGIS 3.x with Qt5 and on QGIS with Qt6).
+    1.0.1 - Security fixes: renamed an internal layer ID flagged as a false hardcoded password, replaced silent try/except/pass blocks, and restricted downloads to https endpoints.
+    1.0.0 - First release.
 tags=aeronautical,aviation,icao,annex4,osm,openstreetmap,overpass,topography,chart
 homepage=https://github.com/riadh-elmokh/aerotopo
 tracker=https://github.com/riadh-elmokh/aerotopo/issues

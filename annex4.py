@@ -27,7 +27,7 @@ ITEMS = [
     ("sand", _G_TOPO, "7", "Sand area / beach", [("natural", "sand|beach")], ""),
     ("gravel", _G_TOPO, "8", "Gravel, shingle, scree", [("natural", "shingle|scree")], ""),
     ("levee", _G_TOPO, "9", "Levee / dyke", [("man_made", "dyke")], ""),
-    ("pass", _G_TOPO, "11", "Mountain pass", [("mountain_pass", "yes")], ""),
+    ("mtn_col", _G_TOPO, "11", "Mountain pass", [("mountain_pass", "yes")], ""),
     ("peaks", _G_TOPO, "12-14", "Spot elevations: peaks, volcanoes, saddles", [("natural", "peak|volcano|saddle")], "Elevation is in the 'ele' attribute."),
     ("survey", _G_TOPO, "13", "Spot elevations: survey / trig points", [("man_made", "survey_point")], "Elevation is in the 'ele' attribute."),
     ("wood", _G_TOPO, "15-17", "Wooded areas (forest, wood)", [(_WOOD, "")], "Heavy in forested regions."),

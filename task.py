@@ -10,7 +10,7 @@ class DownloadTask(QgsTask):
     message = pyqtSignal(str)
 
     def __init__(self, queries, bbox, endpoint, timeout, pause, tile_size, on_done):
-        super().__init__("AeroTopo", QgsTask.CanCancel)
+        super().__init__("AeroTopo", QgsTask.Flag.CanCancel)
         self.queries = queries      # list of (label, key, value)
         self.bbox = bbox
         self.endpoint = endpoint

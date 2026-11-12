@@ -108,13 +108,13 @@ def save_layer(layer, path, layer_name, fmt, first_write):
         opts.driverName = "GPKG"
         opts.layerName = layer_name
         opts.actionOnExistingFile = (
-            QgsVectorFileWriter.CreateOrOverwriteFile if first_write
-            else QgsVectorFileWriter.CreateOrOverwriteLayer
+            QgsVectorFileWriter.ActionOnExistingFile.CreateOrOverwriteFile if first_write
+            else QgsVectorFileWriter.ActionOnExistingFile.CreateOrOverwriteLayer
         )
     else:
         opts.driverName = "ESRI Shapefile"
     res = QgsVectorFileWriter.writeAsVectorFormatV3(
         layer, path, QgsProject.instance().transformContext(), opts
     )
-    if res[0] != QgsVectorFileWriter.NoError:
+    if res[0] != QgsVectorFileWriter.WriterError.NoError:
         raise RuntimeError(res[1])

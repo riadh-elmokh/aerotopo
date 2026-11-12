@@ -59,8 +59,8 @@ class Annex4Picker(QDialog):
         row2.addWidget(self.status_summary)
         lay.addLayout(row2)
 
-        bb = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        bb.button(QDialogButtonBox.Ok).setText("Add to table")
+        bb = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        bb.button(QDialogButtonBox.StandardButton.Ok).setText("Add to table")
         bb.accepted.connect(self.accept)
         bb.rejected.connect(self.reject)
         lay.addWidget(bb)
@@ -80,15 +80,15 @@ class Annex4Picker(QDialog):
         self.items = {}
         for group, items in annex4.groups():
             g = QTreeWidgetItem(self.tree, [group])
-            g.setFlags(g.flags() | Qt.ItemIsUserCheckable | Qt.ItemIsTristate)
-            g.setCheckState(0, Qt.Unchecked)
+            g.setFlags(g.flags() | Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsAutoTristate)
+            g.setCheckState(0, Qt.CheckState.Unchecked)
             for it in items:
                 c = QTreeWidgetItem(g, [
                     it["name"], annex4.official_names(it), "", "",
                     "/".join(it["geom"])])
-                c.setFlags(c.flags() | Qt.ItemIsUserCheckable)
-                c.setCheckState(0, Qt.Unchecked)
-                c.setData(0, Qt.UserRole, it["id"])
+                c.setFlags(c.flags() | Qt.ItemFlag.ItemIsUserCheckable)
+                c.setCheckState(0, Qt.CheckState.Unchecked)
+                c.setData(0, Qt.ItemDataRole.UserRole, it["id"])
                 tip = "\n".join(x for x in (
                     f"Annex 4: {it['src_annex4']}" if it["src_annex4"] else "",
                     f"Doc 8697: {it['src_doc8697']}" if it["src_doc8697"] else "",
@@ -129,11 +129,11 @@ class Annex4Picker(QDialog):
 
     def set_all(self, state):
         for c in self.items.values():
-            c.setCheckState(0, Qt.Checked if state else Qt.Unchecked)
+            c.setCheckState(0, Qt.CheckState.Checked if state else Qt.CheckState.Unchecked)
 
     def selected(self):
         return [annex4.BY_ID[i] for i, c in self.items.items()
-                if c.checkState(0) == Qt.Checked]
+                if c.checkState(0) == Qt.CheckState.Checked]
 
     def export_report(self):
         path, _ = QFileDialog.getSaveFileName(

@@ -1,3 +1,4 @@
+import contextlib
 import math
 import os
 import time
@@ -21,9 +22,9 @@ from .picker import Annex4Picker
 from .task import DownloadTask
 
 SETTINGS = "aerotopo/"
-_ROLE_LABEL = Qt.UserRole          # display label for the layer
-_ROLE_LABEL_KEY = Qt.UserRole + 1  # key the label was built from
-_ROLE_PRESET = Qt.UserRole + 2     # chart code that added this row (preset)
+_ROLE_LABEL = Qt.ItemDataRole.UserRole          # display label for the layer
+_ROLE_LABEL_KEY = Qt.ItemDataRole.UserRole + 1  # key the label was built from
+_ROLE_PRESET = Qt.ItemDataRole.UserRole + 2     # chart code that added this row (preset)
 
 
 class AeroTopoDialog(QDialog):
@@ -35,10 +36,10 @@ class AeroTopoDialog(QDialog):
         self.setWindowTitle("AeroTopo: topographic data for aeronautical charts")
         # normal app window: minimize, maximize AND close buttons
         self.setWindowFlags(
-            Qt.Window
-            | Qt.WindowMinimizeButtonHint
-            | Qt.WindowMaximizeButtonHint
-            | Qt.WindowCloseButtonHint)
+            Qt.WindowType.Window
+            | Qt.WindowType.WindowMinimizeButtonHint
+            | Qt.WindowType.WindowMaximizeButtonHint
+            | Qt.WindowType.WindowCloseButtonHint)
         self.resize(700, 900)
         self.setSizeGripEnabled(True)
         s = QgsSettings()
@@ -51,7 +52,7 @@ class AeroTopoDialog(QDialog):
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setWidget(content)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         outer = QVBoxLayout(self)
         outer.setContentsMargins(0, 0, 0, 0)
         outer.addWidget(scroll)
@@ -89,7 +90,7 @@ class AeroTopoDialog(QDialog):
         box = QGroupBox("5. Output")
         f = QFormLayout(box)
         self.folder = QgsFileWidget()
-        self.folder.setStorageMode(QgsFileWidget.GetDirectory)
+        self.folder.setStorageMode(QgsFileWidget.StorageMode.GetDirectory)
         self.folder.setFilePath(s.value(SETTINGS + "folder", ""))
         self.fmt = QComboBox()
         self.fmt.addItems(["GeoPackage (one file per run)", "Shapefile (one file per layer)"])
@@ -153,7 +154,7 @@ class AeroTopoDialog(QDialog):
             row.addWidget(w)
         root.addLayout(row)
         root.addStretch(0)
-        outer.addWidget(QSizeGrip(self), 0, Qt.AlignRight)
+        outer.addWidget(QSizeGrip(self), 0, Qt.AlignmentFlag.AlignRight)
         self.footer = QLabel("Data © OpenStreetMap contributors (ODbL)")
         self.footer.setContentsMargins(8, 0, 8, 2)
         outer.addWidget(self.footer)
@@ -276,8 +277,8 @@ class AeroTopoDialog(QDialog):
         v = QVBoxLayout(box)
         self.table = QTableWidget(0, 2)
         self.table.setHorizontalHeaderLabels(["Key", "Value (empty = any)"])
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.itemChanged.connect(self._on_item_changed)
         self.table.setToolTip(
             "Value tips:  a|b|c = several values,  ~regex = regular expression.\n"
@@ -319,15 +320,11 @@ class AeroTopoDialog(QDialog):
             # 1) stop and detach any running download task + its signals
             task = getattr(self, "task", None)
             if task is not None:
-                try:
+                with contextlib.suppress(Exception):
                     task.cancel()
-                except Exception:  # noqa: BLE001
-                    pass
                 for sig in ("progressChanged", "message", "query_done"):
-                    try:
+                    with contextlib.suppress(Exception):
                         getattr(task, sig).disconnect()
-                    except Exception:  # noqa: BLE001
-                        pass
                 self.task = None
             # 2) clear the layer table (programmatic, not a manual edit)
             self._suspend_edit = True
@@ -355,8 +352,8 @@ class AeroTopoDialog(QDialog):
             # 6) restore buttons to their fresh-open state
             self.run_btn.setEnabled(True)
             self.cancel_btn.setEnabled(False)
-        except Exception:  # noqa: BLE001  (reset must never raise on close)
-            pass
+        except Exception as exc:  # reset must never raise on close
+            self._reset_error = str(exc)
         finally:
             self._resetting = False
 
@@ -405,7 +402,7 @@ class AeroTopoDialog(QDialog):
 
     def open_picker(self):
         picker = Annex4Picker(self)
-        if not picker.exec_():
+        if not picker.exec():
             return
         existing = {
             (self.table.item(r, 0).text().strip() if self.table.item(r, 0) else "",
@@ -461,7 +458,7 @@ class AeroTopoDialog(QDialog):
                 "possibly more if tiles are split.\n"
                 "It can take a long time and put load on the public Overpass server.\n\n"
                 "Continue?")
-            if ans != QMessageBox.Yes:
+            if ans != QMessageBox.StandardButton.Yes:
                 return
         os.makedirs(folder, exist_ok=True)
         QgsSettings().setValue(SETTINGS + "folder", folder)
