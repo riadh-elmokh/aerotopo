@@ -14,9 +14,7 @@ organised by the symbols of **ICAO Annex 4 – Aeronautical Charts, Appendix 2**
 - Large areas are downloaded in tiles; tiles the server cannot answer are split automatically.
 - Output to GeoPackage (one file per run) or Shapefile; runs in the background.
 
-## Install
-*Plugins → Manage and Install Plugins → search "AeroTopo"*, or *Install from ZIP*.
-Requires QGIS 3.20+ and an internet connection.
+
 
 ## Usage
 1. **Annex 4 layers…** → tick layers (or choose a chart type) → *Add to table*.
