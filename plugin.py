@@ -1,7 +1,7 @@
 import os
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtWidgets import QAction, QApplication
 
 from .dialog import AeroTopoDialog
 
@@ -34,9 +34,15 @@ class AeroTopoPlugin:
 
     def run(self):
         if self.dialog is None:
-            self.dialog = AeroTopoDialog(self.iface, self.iface.mainWindow())
+            # No parent: own taskbar entry, so the window can be found after it is minimised.
+            self.dialog = AeroTopoDialog(self.iface, None)
+            app = QApplication.instance()
+            if app is not None:
+                app.aboutToQuit.connect(self.dialog.close)
         else:
             self.dialog.refresh_extent()
+        if self.dialog.isMinimized():
+            self.dialog.showNormal()
         self.dialog.show()
         self.dialog.raise_()
         self.dialog.activateWindow()

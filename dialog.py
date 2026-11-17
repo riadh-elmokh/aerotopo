@@ -9,6 +9,7 @@ from qgis.core import (
 )
 from qgis.gui import QgsExtentGroupBox, QgsFileWidget
 from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import (
     QAbstractItemView, QCheckBox, QComboBox, QDialog,
     QDoubleSpinBox, QFormLayout, QGroupBox, QHBoxLayout,
@@ -34,6 +35,9 @@ class AeroTopoDialog(QDialog):
         self.task = None
         self._suspend_edit = False   # guards programmatic table updates
         self.setWindowTitle("AeroTopo: topographic data for aeronautical charts")
+        icon_file = os.path.join(os.path.dirname(__file__), "icon.png")
+        if os.path.exists(icon_file):
+            self.setWindowIcon(QIcon(icon_file))
         # normal app window: minimize, maximize AND close buttons
         self.setWindowFlags(
             Qt.WindowType.Window
